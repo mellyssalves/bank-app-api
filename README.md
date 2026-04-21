@@ -1,21 +1,22 @@
 # Bank API
 
-Projeto de um sistema bancário simples com:
+Sistema bancário simples desenvolvido com Java e Spring Boot.
 
-- Java + Spring Boot
-- API REST
-- Transferência entre usuários
-- Histórico de transações
-- Frontend simples em HTML/JS
-
-## Como rodar
-
-1. Rodar backend (Spring Boot)
-2. Abrir frontend (index.html)
+## Tecnologias
+- Java 21
+- Spring Boot
+- JPA / Hibernate
+- H2 Database
+- REST API
 
 ## Funcionalidades
+- Criação de usuários
+- Transferência de saldo entre usuários
+- Controle de saldo
+- Histórico de transações
+- Integração com frontend (HTML + JS)
 
-- Criar usuário
-- Transferir saldo
-- Ver usuários
-- Ver histórico
+## Conceitos aplicados
+- Arquitetura em camadas (Controller, Service, Repository)
+- Boas práticas REST
+- Manipulação de dados e regras de negócio
