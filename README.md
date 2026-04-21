@@ -18,5 +18,4 @@ Sistema bancário simples desenvolvido com Java e Spring Boot.
 
 ## Conceitos aplicados
 - Arquitetura em camadas (Controller, Service, Repository)
-- Boas práticas REST
 - Manipulação de dados e regras de negócio
