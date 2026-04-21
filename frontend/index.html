@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank API Front</title>
+</head>
+<style>
+  body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+  }
+
+  h1 {
+    color: #22c55e;
+  }
+
+  .card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  input {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+
+  button {
+    padding: 8px 12px;
+    background: #22c55e;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    cursor: pointer;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    background: #334155;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+
+<h1>Bank App</h1>
+
+<div class="card">
+  <h2>Criar Usuário</h2>
+  <input id="name" placeholder="Nome">
+  <input id="balance" placeholder="Saldo" type="number">
+  <button onclick="createUser()">Criar</button>
+</div>
+
+<div class="card">
+  <h2>Transferência</h2>
+  <input id="fromId" placeholder="De (ID)" type="number">
+  <input id="toId" placeholder="Para (ID)" type="number">
+  <input id="amount" placeholder="Valor" type="number">
+  <button onclick="transfer()">Transferir</button>
+</div>
+
+<div class="card">
+  <h2>Usuários</h2>
+  <button onclick="loadUsers()">Carregar</button>
+  <ul id="users"></ul>
+</div>
+
+<div class="card">
+  <h2>Transações</h2>
+  <button onclick="loadTransactions()">Carregar</button>
+  <ul id="transactions"></ul>
+</div>
+
+<script>
+const API = "http://localhost:8080";
+
+window.createUser = async function () {
+  await fetch(API + "/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      balance: parseFloat(document.getElementById("balance").value)
+    })
+  });
+
+  alert("Usuário criado!");
+};
+
+window.transfer = async function () {
+  const res = await fetch(API + "/users/transfer", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      fromUserId: parseInt(document.getElementById("fromId").value),
+      toUserId: parseInt(document.getElementById("toId").value),
+      amount: parseFloat(document.getElementById("amount").value)
+    })
+  });
+
+  const text = await res.text();
+  alert(text);
+};
+
+window.loadUsers = async function () {
+  const res = await fetch(API + "/users");
+  const data = await res.json();
+
+  const list = document.getElementById("users");
+  list.innerHTML = "";
+
+  data.forEach(user => {
+    const li = document.createElement("li");
+    li.innerText = `ID: ${user.id} | ${user.name} | Saldo: ${user.balance}`;
+    list.appendChild(li);
+  });
+};
+
+window.loadTransactions = async function () {
+  const usersRes = await fetch(API + "/users");
+  const users = await usersRes.json();
+
+  const res = await fetch(API + "/transactions");
+  const data = await res.json();
+
+  const list = document.getElementById("transactions");
+  list.innerHTML = "";
+
+  data.forEach(t => {
+    const fromUser = users.find(u => u.id === t.fromUserId);
+    const toUser = users.find(u => u.id === t.toUserId);
+
+    const li = document.createElement("li");
+    li.innerText = `${fromUser?.name} → ${toUser?.name} | R$ ${t.amount}`;
+    list.appendChild(li);
+  });
+};
+</script>
+</html>
